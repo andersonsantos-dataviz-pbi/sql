@@ -1,4 +1,4 @@
-/*Verificando se já existe uma tabela calendário para deleção*/
+/*Verificando se jÃ¡ existe uma tabela calendÃ¡rio para deletÃ¡-la*/
 USE Teste; /*Informe a base de dados de trabalho*/  
 GO  
 IF OBJECT_ID (N'dbo.D_Calendario', N'U') IS NOT NULL  
@@ -8,8 +8,8 @@ GO
 /*Definindo o dia de inicio da semana. 1 para iniciar na segunda, 7 para iniciar no domingo.*/
 SET DATEFIRST 1;
 
-/*Criando o escopo de data inicial e data final da tabela calendário*/
-DECLARE @data DATE = GETDATE() /* Definindo data atual como DATE ao invés de DATETIME*/
+/*Criando o escopo de data inicial e data final da tabela calendÃ¡rio*/
+DECLARE @data DATE = GETDATE() /* Definindo data atual como DATE ao invÃ©s de DATETIME*/
 DECLARE @rangeStart DATE = DATEADD(yy, DATEDIFF(yy, 0, GETDATE()) -1, 0) /*Definindo o primeiro dia do ano. Para anos anteriores DATEADD(yy, DATEDIFF(yy, 0, GETDATE()) -1, 0), para ano atual DATEADD(yy, DATEDIFF(yy, 0, GETDATE()), 0) */
 DECLARE @rangeEnd DATE = @data /*Definindo data atual*/  
 
@@ -17,7 +17,7 @@ DECLARE @rangeEnd DATE = @data /*Definindo data atual*/
 DECLARE @dataContexto DATE
 SET @dataContexto = @rangeStart
 
-/*Criando tabela calendário*/
+/*Criando tabela calendÃ¡rio*/
 CREATE TABLE D_Calendario
 (
 	Data DATE,
@@ -76,16 +76,16 @@ BEGIN
 			MONTH(@dataContexto),
 			DATEPART(dy, @dataContexto),
 			DAY(@dataContexto),
-			CONCAT(YEAR(@dataContexto), DATEPART(wk, @dataContexto)),
-			CONCAT(RIGHT(YEAR(@dataContexto),2),'W', DATEPART(wk, @dataContexto)),
+			CONCAT(YEAR(@dataContexto), RIGHT('0' + CAST(DATEPART(wk, @dataContexto) AS VARCHAR(2)), 2)),
+			CONCAT(RIGHT(YEAR(@dataContexto),2),'W', RIGHT('0' + CAST(DATEPART(wk, @dataContexto) AS VARCHAR(2)), 2)),
 			DATEPART(WEEK, @dataContexto) - DATEPART(WEEK, CONVERT(CHAR(6), @dataContexto, 112) + '01') + 1,
 			REPLICATE(NCHAR(8203) , 7 - DATEPART(WEEKDAY,@dataContexto) ) + LEFT(DATENAME(WEEKDAY, @dataContexto),3),
 			REPLICATE(NCHAR(8203) ,12 - MONTH(@dataContexto) ) + DATENAME(MONTH, @dataContexto),
 			REPLICATE(NCHAR(8203) ,12 - MONTH(@dataContexto) ) + LEFT(DATENAME(MONTH, @dataContexto),3),
 			LEFT(DATENAME(MONTH, @dataContexto),3) + '/' +  DATENAME(YEAR, @dataContexto),
 			CASE 
-				WHEN LEFT(DATENAME(MONTH, @dataContexto),3) + '/' +  DATENAME(YEAR, @dataContexto) /*Mês/Ano do contexto*/ 
-				= LEFT(DATENAME(MONTH, @data),3) + '/' +  DATENAME(YEAR, @data) /*Mês/Ano Atual*/ THEN 'Atual' 
+				WHEN LEFT(DATENAME(MONTH, @dataContexto),3) + '/' +  DATENAME(YEAR, @dataContexto) /*MÃªs/Ano do contexto*/ 
+				= LEFT(DATENAME(MONTH, @data),3) + '/' +  DATENAME(YEAR, @data) /*MÃªs/Ano Atual*/ THEN 'Atual' 
 				ELSE 'Outros' 
 			END,
 			12 * YEAR(@dataContexto) + MONTH(@dataContexto) - 1,
